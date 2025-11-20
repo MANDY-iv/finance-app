@@ -22,7 +22,7 @@ Flask-based web application for personal finance management with authentication,
 
 1. Clone repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/finance-app.git
+git clone https://github.com/MANDY-iv/finance-app.git
 
 ## Install dependencies:
 
@@ -31,4 +31,5 @@ pip install -r requirements.txt
 ## Run application:
 
 python run.py
+
 
