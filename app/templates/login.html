@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Вход в систему</h2>
+    <form id="loginForm">
+        <input type="email" name="email" placeholder="Электронная почта" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Нет аккаунта? <a href="{{ url_for('auth.register_page') }}">Зарегистрироваться</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        if (response.ok) {
+            localStorage.setItem('token', result.token);
+            window.location.href = '/dashboard';
+        } else {
+            alert(result.error || 'Ошибка входа');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Ошибка при входе в систему');
+    }
+});
+</script>
+{% endblock %}

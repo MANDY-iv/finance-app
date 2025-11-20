@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансовый менеджер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>💰 Финансовый менеджер</h1>
+            {% if not hide_nav %}
+            <nav class="header-nav">
+                <a href="{{ url_for('dashboard.dashboard_home') }}" class="nav-link">Дашборд</a>
+                <a href="{{ url_for('dashboard.transactions_page') }}" class="nav-link">Транзакции</a>
+                <a href="{{ url_for('dashboard.stats_page') }}" class="nav-link">Статистика</a>
+                <a href="{{ url_for('auth.logout') }}" class="nav-link logout">Выйти</a>
+            </nav>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+    
+    <script>
+        // Проверяем авторизацию при загрузке страницы
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const mainNav = document.getElementById('mainNav');
+            const authNav = document.getElementById('authNav');
+            
+            if (token) {
+                // Пользователь авторизован - показываем основную навигацию
+                mainNav.style.display = 'flex';
+                authNav.style.display = 'none';
+            } else {
+                // Пользователь не авторизован - показываем навигацию для входа
+                mainNav.style.display = 'none';
+                authNav.style.display = 'flex';
+            }
+        }
+        
+        // Проверяем при загрузке страницы
+        document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+</body>
+</html>
+
+

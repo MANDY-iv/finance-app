@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Статистика по категориям</h2>
+
+<div class="chart-container">
+    <canvas id="incomeExpenseChart" width="400" height="200"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const token = localStorage.getItem('token');
+if (!token) {
+    window.location.href = '/auth/login';
+}
+
+async function loadStats(){
+    try {
+        const response = await fetch('/dashboard/stats_data', {
+            headers: {'Authorization': `Bearer ${token}`}
+        });
+        
+        if(!response.ok) {
+            if(response.status === 401) {
+                window.location.href = '/auth/login';
+                return;
+            }
+            return alert('Ошибка при загрузке статистики');
+        }
+        
+        const data = await response.json();
+
+        const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Доход',
+                        data: data.income,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                    },
+                    {
+                        label: 'Расход',
+                        data: data.expense,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    }
+                ]
+            },
+            options: { 
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Доходы и расходы по категориям'
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        alert('Ошибка при загрузке статистики');
+    }
+}
+
+loadStats();
+</script>
+{% endblock %}
